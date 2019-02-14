@@ -1,9 +1,10 @@
 import cv2
 
 class MouseManager:
-	def __init__(self, laser_frame, image_frame, printer):
-		self.laser_frame = laser_frame
-		self.image_frame = image_frame
+	def __init__(self, printer):
+		cv2.setMouseCallback('image', self.mouse_event)
+		self.laser_frame = printer.settings.laser_frame
+		self.image_frame = printer.settings.image_frame
 		self.printer = printer
 		self.mouseDrag = False
 		self.activeFrame = None

@@ -1,15 +1,17 @@
-import serial, time
+import serial
+from settings import frameSettings
 from utils import MatrixConversion
 
 class Printer():
-	def __init__(self, COM, coeffs):
+	def __init__(self, COM):
 		self.COM = COM
-		self.coeffs = coeffs 
 		self.max_X = 250
 		self.max_Y = 200
 		self.ser = None
 		self.position = (0,0)
 		self.sendSerial = False
+		self.settings = frameSettings.frameSettings()
+		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
 
 	def begin(self):
 		print("Connecting")
@@ -26,10 +28,9 @@ class Printer():
 		x,y = xy
 		x = self.max_X - x
 		self.position = xy
-		command = 'G0 F5000 X%d Y%d\n'%(x, y) + 'G0 F5000 X0 Y0\n'
+		command = 'G0 F5000 X%d Y%d\n'%(x, y) + 'G4 P1000\n' + 'G0 F5000 X0 Y0\n'
 
 		if self.sendSerial and self.ser is not None and self.withinBounds(xy):
-			print(command)
 			self.ser.write(command.encode())
 			return 1
 		else:
