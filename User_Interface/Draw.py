@@ -12,13 +12,16 @@ def drawDots(image, points, size, color, thickness):
 	#Mark TopLeft corner with white dot
 	cv2.circle(image,points[0], 2, (255,255,255),-1)
 
-def drawImage(frame, laser_frame, coeffs, printerPosition ,enableDots):
+def drawImage(frame, laser_frame, coeffs, printer, enableDots):
 	drawBox(frame, laser_frame.corners, (255, 255, 255), 1)
 	if enableDots == True:
-		drawDots(frame, laser_frame.corners, 10, (0, 0, 255), -1)
+		drawDots(frame, laser_frame.corners, 10, (255, 0, 0), -1)
 		x,y = laser_frame.getCenter()
-		cv2.circle(frame, (int(x),int(y)), 4, (0, 255, 0), 1)
-	cv2.putText(frame, str(laser_frame.corners), (20, 30),  cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255))
-	cv2.putText(frame, str(laser_frame.getCenter()), (450, 450), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255))
-	cx,cy = printerPosition
+		cv2.circle(frame, (int(x), int(y)), 4, (0, 255, 0), 1)
+	cx,cy = printer.position
 	cv2.putText(frame, str((round(cx),round(cy))), (20, 450), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255))
+	if printer.sendSerial:
+		cv2.circle(frame, (150, 450), 10, (0, 255, 0), 25)
+	else:
+		cv2.circle(frame, (150, 450), 10, (0, 0, 255), 25)
+

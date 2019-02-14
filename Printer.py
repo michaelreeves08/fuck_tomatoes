@@ -1,4 +1,4 @@
-import serial
+import serial, time
 from utils import MatrixConversion
 
 class Printer():
@@ -9,13 +9,12 @@ class Printer():
 		self.max_Y = 200
 		self.ser = None
 		self.position = (0,0)
+		self.sendSerial = False
 
 	def begin(self):
 		print("Connecting")
 		try:
-			pass
-			#self.ser = serial.Serial('COM5', 9600, timeout=1)
-			#time.sleep(3)
+			self.ser = serial.Serial(self.COM, 115200, timeout = 1)
 		except:
 			print("Connection Fail")
 
@@ -25,18 +24,16 @@ class Printer():
 
 	def writeRaw(self, xy):
 		x,y = xy
+		x = self.max_X - x
 		self.position = xy
-		command = 'G0 F5000 X%d Y%d'%(x, y)
+		command = 'G0 F5000 X%d Y%d\n'%(x, y) + 'G0 F5000 X0 Y0\n'
 
-		if self.withinBounds(xy):
+		if self.sendSerial and self.ser is not None and self.withinBounds(xy):
 			print(command)
+			self.ser.write(command.encode())
+			return 1
 		else:
-			print('out of bounds')
-		# if self.ser not None:
-		# 	#self.ser.write(command.encode())
-		# 	return 1
-		# else:
-		# 	return 0
+			return 0
 	
 	def write(self, xy, laser_frame):
 		galvo_points = [(self.max_X,self.max_Y), (0,self.max_Y), (0,0), (self.max_X,0)]
@@ -44,5 +41,11 @@ class Printer():
 		new_x, new_y = MatrixConversion.warped_xy( (xy), self.coeffs)
 		self.writeRaw((new_x, new_y))
 
+	def callibrate(self):
+		self.ser.write('G28\n'.encode())
+	
+	def home(self):
+		self.ser.write('G0 F5000 X0 Y0\n'.encode())
+
 	def read(self):
-		print(ser.readline())
+		print(self.ser.readline())
