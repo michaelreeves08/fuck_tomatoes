@@ -7,18 +7,12 @@ class Printer():
 		self.COM = COM
 		self.max_X = 250
 		self.max_Y = 200
-		self.ser = None
 		self.position = (0,0)
 		self.sendSerial = False
 		self.settings = frameSettings.frameSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
-
-	def begin(self):
-		print("Connecting")
-		try:
-			self.ser = serial.Serial(self.COM, 115200, timeout = 1)
-		except:
-			print("Connection Fail")
+		try: self.ser = serial.Serial(self.COM, 115200, timeout = 1)
+		except: print("Connection Failure")
 
 	def withinBounds(self, xy):
 		x, y = xy
