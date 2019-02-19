@@ -1,9 +1,9 @@
 import cv2
 
-def checkButtons(printer, boxes):
+def checkButtons(printer):
 	command = cv2.waitKey(10) & 0xFF
 	if command == ord('q'):
-		boxes.saveSettings()
+		printer.settings.saveSettings()
 		printer.home()
 		return True
 	elif command == ord('d'):
@@ -14,4 +14,6 @@ def checkButtons(printer, boxes):
 		printer.home()
 	elif command == ord('c'):
 		printer.callibrate()
+	elif command == ord('z'):
+		printer.raiseZ()
 	return False

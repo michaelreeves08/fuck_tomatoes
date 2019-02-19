@@ -21,7 +21,7 @@ class MouseManager:
 				if frame.isTouching((x, y), 10):
 					self.activeFrame = frame
 					break
-			self.printer.write((x,y), self.laser_frame)
+			self.printer.write((x, y))
 
 		elif event == cv2.EVENT_LBUTTONUP:
 			self.mouseDrag = False
