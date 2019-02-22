@@ -12,9 +12,11 @@ while(True):
 	Draw.drawImage(frame, printer)
 	cv2.imshow('image', frame)
 
+	# ...Detection and package send... #
+
 	#After g-code package send, check for XY reset and update printer execution status
-	if not printer.packageExecuting:
-		#Run image evaluation
+	if not printer.packageIsExecuting():
+		#Run image evaluation and printer position check
 		pass
 
 	if Buttons.checkButtons(printer): break

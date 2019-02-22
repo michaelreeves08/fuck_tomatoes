@@ -10,5 +10,5 @@ testPoints = [
 (246, 189)
 ]
 
-p = Printer.Printer('', (200,200))
+p = Printer.Printer('', '', (200,200))
 print(p.sendPackage(testPoints))
