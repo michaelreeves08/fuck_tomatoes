@@ -1,6 +1,6 @@
-import serial
+import serial, time
 from settings import frameSettings
-from utils import MatrixConversion, Geometry, Gcode
+from utils import MatrixConversion, Geometry, Gcode, PrinterUtils
 
 class Printer():
 	def __init__(self, PrinterCOM, bedSize):
@@ -9,7 +9,7 @@ class Printer():
 		self.position = (0,0)
 		self.settings = frameSettings.frameSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
-		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 1)
+		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 25)
 		except: print("Connection Failure")
 
 	
@@ -43,8 +43,17 @@ class Printer():
 
 	def packageIsExecuting(self):
 		#Query the printer for position
-		pass
+		self.printerSerial.reset_input_buffer()
+		self.printerSerial.write('M114'.encode())
+		printerData = ''
+		while self.printerSerial.in_waiting > 0:
+			printerData += str(self.printerSerial.readline())
 
+		if 'Count' in printerData:
+			x, y = PrinterUtils.parsePrinterXY(printerData)
+			if x == 0 and y == 0: return False
+		return True
+		
 	def raiseZ(self):
 		self.printerSerial.write('G0 F5000 Z50\n'.encode())
 	
