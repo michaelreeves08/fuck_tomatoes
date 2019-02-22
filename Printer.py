@@ -7,6 +7,7 @@ class Printer():
 		self.COM = PrinterCOM
 		self.max_X, self.max_Y = bedSize
 		self.position = (0,0)
+		self.sendSerial = False
 		self.settings = frameSettings.frameSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
 		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 25)

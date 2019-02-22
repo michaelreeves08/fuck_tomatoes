@@ -7,17 +7,16 @@ cv2.namedWindow('image')
 printer = Printer.Printer('COM4', (200, 200))
 mouse = MouseManager.MouseManager(printer)
 
-while(True):
+while 1:
 	ret, frame = cap.read()
 	Draw.drawImage(frame, printer)
 	cv2.imshow('image', frame)
 
-	# ...Detection and package send... #
-	#After g-code package send, check for XY reset and update printer execution status
-	
-	if not printer.packageIsExecuting():
-		#Run image evaluation and printer position check
-		pass
+	print(printer.packageIsExecuting())
+	#if not printer.packageIsExecuting():
+		# ...Detection and package send... #
+		#After g-code package send, check for XY reset and update printer execution status
+		#pass
 
 	if Buttons.checkButtons(printer): break
 
