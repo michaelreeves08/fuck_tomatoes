@@ -3,17 +3,14 @@ from settings import frameSettings
 from utils import MatrixConversion, Geometry, Gcode
 
 class Printer():
-	def __init__(self, PrinterCOM, SensorCOM, bedSize):
+	def __init__(self, PrinterCOM, bedSize):
 		self.COM = PrinterCOM
 		self.max_X, self.max_Y = bedSize
 		self.position = (0,0)
 		self.settings = frameSettings.frameSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
-		# try: 
-		# 	self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 1)
-		# 	self.sensorSerial = serial.Serial(SensorCOM, 9600, timeout = 25)
-		# except:
-		# 	print("Connection Failure")
+		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 1)
+		except: print("Connection Failure")
 
 	
 	def writePoint(self, xy):
@@ -29,10 +26,7 @@ class Printer():
 			return 0
 	
 	def writePackage(self, package):
-		#Send signal to execution sensor
-
 		if self.printerSerial is not None:
-			self.sensorSerial.write('1'.encode())
 			self.printerSerial.write(package.encode())
 
 	def adjustXY(self, xy):
@@ -48,14 +42,8 @@ class Printer():
 		self.writePackage(package)
 
 	def packageIsExecuting(self):
-		if self.sensorSerial.in_waiting > 0:
-			status = self.sensorSerial.read()
-			if status is not None:
-				self.sensorSerial.write('0'.encode())
-				#Might have to add delay here depending on how quick that shit writes
-				self.sensorSerial.reset_input_buffer()
-				return False
-		return True
+		#Query the printer for position
+		pass
 
 	def raiseZ(self):
 		self.printerSerial.write('G0 F5000 Z50\n'.encode())
