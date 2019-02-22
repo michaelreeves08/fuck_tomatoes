@@ -1,18 +1,23 @@
 import Printer, time
+from utils import Gcode
 
 testPoints = [
-(176, 204),
-(306, 208),
-(354, 159),
-(218, 134),
-(277, 126),
-(335, 126),
-(246, 189)
+    (176, 204),
+    (306, 208),
+    (176, 204) 
 ]
 
+start_time = time.time()
 p = Printer.Printer('COM4', (200,200))
-time.sleep(8)
 
+cum = False
 while 1:
-    res = p.packageIsExecuting()
-    
+    if time.time() - start_time > 8:
+        if not cum:
+            cum = True
+            p.sendPackage(testPoints)
+            
+        res = p.packageIsExecuting()
+        if not res:
+            print('Is HOmed: ' + str(time.time()))
+            p.sendPackage(testPoints)

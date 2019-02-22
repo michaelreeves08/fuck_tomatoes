@@ -39,22 +39,21 @@ class Printer():
 		self.writePoint(self.adjustXY(xy))
 
 	def sendPackage(self, points):
-		package = Gcode.buildGcodePackage(list(map(self.adjustXY, points)))
+		package = Gcode.buildGcodePackage(list(map(self.adjustXY, points)), (self.max_X, self.max_Y))
 		self.writePackage(package)
 
 	def packageIsExecuting(self):
 		#Query the printer for position
-		self.printerSerial.reset_input_buffer()
+		#self.printerSerial.reset_input_buffer()
 		self.printerSerial.write('M114'.encode())
 		printerData = ''
 		while self.printerSerial.in_waiting > 0:
 			printerData += str(self.printerSerial.readline())
-
 		if 'Count' in printerData:
-			x, y = PrinterUtils.parsePrinterXY(printerData)
-			if x == 0 and y == 0: return False
+			headPosition = PrinterUtils.parsePrinterXY(printerData)
+			return not PrinterUtils.isHomed(headPosition)
 		return True
-		
+
 	def raiseZ(self):
 		self.printerSerial.write('G0 F5000 Z50\n'.encode())
 	
