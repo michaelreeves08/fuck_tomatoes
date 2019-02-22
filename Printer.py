@@ -38,6 +38,8 @@ class Printer():
 	def write(self, xy):
 		self.writePoint(self.adjustXY(xy))
 
+	#Cannot send packages with over 3 locations at once,
+	#it overflows the printer's serial buffer because it's a peice of dog shit
 	def sendPackage(self, points):
 		package = Gcode.buildGcodePackage(list(map(self.adjustXY, points)), (self.max_X, self.max_Y))
 		self.writePackage(package)
