@@ -3,8 +3,9 @@ from utils import Gcode
 
 testPoints = [
     (176, 204),
-    (306, 208),
-    (176, 204) 
+    (306, 150),
+    (176, 204), 
+    (306, 150)
 ]
 
 start_time = time.time()
