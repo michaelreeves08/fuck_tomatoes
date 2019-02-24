@@ -8,47 +8,68 @@ params = cv2.SimpleBlobDetector_Params()
 params.minThreshold = 1
 params.maxThreshold = 256
  
-# Filter by Area.
 params.filterByArea = True
-params.minArea = 50
+params.minArea = 350
 
-# # Filter by Convexity
-# params.filterByConvexity = True
-# params.minConvexity = 0.87
- 
-# # Filter by Inertia
-# params.filterByInertia = True
-# params.minInertiaRatio = 0.01
-
+params.filterByConvexity = False
+params.filterByInertia = False
 
 detector = cv2.SimpleBlobDetector_create(params)
 
-img = cv2.imread('salad.jpg')
-wht = cv2.imread('wht.jpg')
-kernelOpen=np.ones((3,3))
-kernelClose=np.ones((7,7))
+cap = cv2.VideoCapture(0)
+
+openVal = 1
+closeVal = 11
+erode = 10
+dilate = 0
+
+lowerBound=np.array([0,180,20])
+upperBound=np.array([20,255,255])
+
+cv2.namedWindow('image')
+
+def nothing(x):
+    pass
+
+cv2.createTrackbar('Open','image',openVal,20,nothing)
+cv2.createTrackbar('Close','image',closeVal,40,nothing)
+cv2.createTrackbar('Erode','image',erode,30,nothing)
+cv2.createTrackbar('Dilate','image',dilate,30,nothing)
+
+while 1:
+        
+    ret, img = cap.read()
+
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    mask = cv2.inRange(hsv, lowerBound, upperBound)
+
+
+    kernelOpen=np.ones((cv2.getTrackbarPos('Open','image'), cv2.getTrackbarPos('Open','image')))
+    kernelClose=np.ones((cv2.getTrackbarPos('Close','image'), cv2.getTrackbarPos('Close','image')))
+    kernelErode=np.ones((cv2.getTrackbarPos('Erode','image'), cv2.getTrackbarPos('Erode','image')))
+    kernelDilate=np.ones((cv2.getTrackbarPos('Dilate','image'), cv2.getTrackbarPos('Dilate','image')))
  
-lowerBound=np.array([0,180,180])
-upperBound=np.array([10,255,255])
+    mask=cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernelOpen, iterations = 1)
+    mask=cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernelClose, iterations= 2)
+    mask = cv2.erode(mask, kernelErode, iterations = 1)
+    mask = cv2.dilate(mask, kernelDilate, iterations = 1)
 
-hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-mask = cv2.inRange(hsv, lowerBound, upperBound)
-mask=cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernelOpen, iterations = 2)
-mask=cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernelClose)
 
-maskImg = cv2.bitwise_and(img,img, mask= mask)
+    maskImg = cv2.bitwise_and(img,img, mask= mask)
 
-maskImg = 255 - maskImg
+    maskImg = 255 - maskImg
 
-points = detector.detect(maskImg)
+    points = detector.detect(maskImg)
 
-for i in points:
-    print i.pt
+    for i in points:
+        print(i.pt)
 
-img = cv2.drawKeypoints(img, points, np.array([]), (255,0,0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+    img = cv2.drawKeypoints(img, points, np.array([]), (255,0,0), cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
-cv2.imshow('REEE', maskImg)
-cv2.imshow('wut', img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+    cv2.imshow('image', maskImg)
+    cv2.imshow('wut', img)
+
+    command = cv2.waitKey(10) & 0xFF
+    if command == ord('q'):
+        break
 
