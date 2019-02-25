@@ -9,7 +9,7 @@ def checkButtons(printer):
 	elif command == ord('d'):
 		enableDots = not enableDots
 	elif command == ord('f'):
-		printer.sendSerial = not printer.sendSerial
+		printer.sendSerial = not printer.sendSpike
 	elif command == ord('h'):
 		printer.home()
 	elif command == ord('c'):

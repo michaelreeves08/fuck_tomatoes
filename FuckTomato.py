@@ -4,7 +4,6 @@ from User_Interface import Draw, MouseManager, Buttons
 start_time = time.time()
 
 cap = cv2.VideoCapture(0)
-ret, frame = cap.read()
 cv2.namedWindow('image')
 printer = Printer.Printer('COM4', (200, 200))
 mouse = MouseManager.MouseManager(printer)

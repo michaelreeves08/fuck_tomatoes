@@ -7,7 +7,7 @@ class Printer():
 		self.COM = PrinterCOM
 		self.max_X, self.max_Y = bedSize
 		self.position = (0,0)
-		self.sendSerial = False
+		self.sendSpike = False
 		self.settings = frameSettings.frameSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
 		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 25)
@@ -42,7 +42,7 @@ class Printer():
 	#it overflows the printer's serial buffer because it's a peice of dog shit
 	def sendPackage(self, points):
 		if points.count > 4: points = points[:4]
-		package = Gcode.buildGcodePackage(list(map(self.adjustXY, points)), (self.max_X, self.max_Y))
+		package = Gcode.buildGcodePackage(list(map(self.adjustXY, points)), (self.max_X, self.max_Y), self.sendSpike)
 		self.writePackage(package)
 
 	def packageIsExecuting(self):
