@@ -1,6 +1,6 @@
 import cv2
 
-def checkButtons(printer):
+def checkButtons(printer, sliders):
 	command = cv2.waitKey(10) & 0xFF
 	if command == ord('q'):
 		printer.settings.saveSettings()
