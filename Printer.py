@@ -1,5 +1,5 @@
 import serial, time
-from settings import frameSettings
+from settings import printerSettings
 from utils import MatrixConversion, Geometry, Gcode, PrinterUtils
 
 class Printer():
@@ -9,7 +9,7 @@ class Printer():
 		self.position = (0,0)
 		self.sendSpike = False
 		self.sendMovement = True
-		self.settings = frameSettings.frameSettings()
+		self.settings = printerSettings.PrinterSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
 		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 25)
 		except: print("Connection Failure")
@@ -45,6 +45,7 @@ class Printer():
 		if not self.sendMovement: return
 		if len(points) > 4: points = points[:4]
 		adjustedPoints = list(map(self.adjustXY, points))
+		adjustedPoints = PrinterUtils.addOffsets(adjustedPoints, (self.settings.xOffset, self.settings.yOffset))
 		adjustedPoints = PrinterUtils.reverseBoundX(adjustedPoints, self.max_X) #Reverse X bound
 		package = Gcode.buildGcodePackage(adjustedPoints, (self.max_X, self.max_Y), self.sendSpike)
 		

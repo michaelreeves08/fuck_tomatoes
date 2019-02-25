@@ -1,3 +1,6 @@
+def addOffsets(points, offsets):
+    x, y = offsets
+    return [(point[0] + x, point[1] + y) for point in points]
 
 def reverseBoundX(points, xMax):
     return [(xMax - point[0], point[1]) for point in points]

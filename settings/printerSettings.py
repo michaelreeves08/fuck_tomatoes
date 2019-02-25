@@ -2,7 +2,7 @@ import json
 from User_Interface import BoxFrame
 SettingsName = 'Settings.json'
 
-class frameSettings:
+class PrinterSettings:
     def __init__(self):
         with open(SettingsName, 'r') as file:
             data = json.load(file)
@@ -12,11 +12,15 @@ class frameSettings:
 
         self.laser_frame = BoxFrame.BoxFrame(laser_frame)
         self.image_frame =  BoxFrame.BoxFrame(image_frame)
+        self.xOffset = data['xOffset']
+        self.yOffset = data['yOffset']
     
     def saveSettings(self):
         jsonDict = {
             "laser_frame": self.laser_frame.corners,
-            "image_frame": self.image_frame.corners 
+            "image_frame": self.image_frame.corners,
+            "xOffset": self.xOffset,
+            "yOffset": self.yOffset
         }
         with open(SettingsName, 'w') as file:
             json.dump(jsonDict, file)

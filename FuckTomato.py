@@ -30,7 +30,6 @@ while 1:
 				printer.sendPackage(points)
 			buffer_time = time.time()
 			
-
 	Draw.drawImage(img, printer)
 
 	cv2.imshow('cum', processedImg)

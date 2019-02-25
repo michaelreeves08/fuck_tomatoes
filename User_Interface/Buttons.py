@@ -9,6 +9,14 @@ def checkButtons(printer, sliders):
 		return True
 	elif command == ord('d'):
 		enableDots = not enableDots
+	elif command == ord('c'):
+		printer.settings.xOffset -= 1
+	elif command == ord('v'):
+		printer.settings.xOffset += 1
+	elif command == ord('u'):
+		printer.settings.yOffset -= 1
+	elif command == ord('i'):
+		printer.settings.yOffset += 1
 	elif command == ord('s'):
 		printer.sendMovement = not printer.sendMovement
 	elif command == ord('f'):
@@ -16,7 +24,7 @@ def checkButtons(printer, sliders):
 		print(printer.sendSpike)
 	elif command == ord('h'):
 		printer.home()
-	elif command == ord('c'):
+	elif command == ord('g'):
 		printer.callibrate()
 	elif command == ord('z'):
 		printer.raiseZ()

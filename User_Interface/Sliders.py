@@ -1,12 +1,6 @@
 import cv2
 from settings import maskSettings
 
-openVal = 1
-closeVal = 11
-erode = 10
-dilate = 8
-saturationMin = 170
-
 class Sliders:
 
     def nothing(self, x): pass

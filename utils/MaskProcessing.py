@@ -4,8 +4,8 @@ import numpy as np
 def GetColorMask(img, sliders):
     saturationMin = sliders.getMaskSettings().saturationMin
 
-    lowerBound = np.array([0,saturationMin,20])
-    upperBound = np.array([20,255,255])
+    lowerBound = np.array([0, saturationMin, 1])
+    upperBound = np.array([20, 255, 255])
 
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     return cv2.inRange(hsv, lowerBound, upperBound)
