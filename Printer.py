@@ -8,6 +8,7 @@ class Printer():
 		self.max_X, self.max_Y = bedSize
 		self.position = (0,0)
 		self.sendSpike = False
+		self.sendMovement = True
 		self.settings = frameSettings.frameSettings()
 		self.coeffs = MatrixConversion.find_coeffs(self.settings.image_frame.corners, self.settings.laser_frame.corners) 
 		try: self.printerSerial = serial.Serial(PrinterCOM, 115200, timeout = 25)
@@ -41,13 +42,19 @@ class Printer():
 	#Cannot send packages with over 4 locations at once,
 	#it overflows the printer's serial buffer because it's a peice of dog shit
 	def sendPackage(self, points):
-		if points.count > 4: points = points[:4]
-		package = Gcode.buildGcodePackage(list(map(self.adjustXY, points)), (self.max_X, self.max_Y), self.sendSpike)
+		if not self.sendMovement: return
+		if len(points) > 4: points = points[:4]
+		adjustedPoints = list(map(self.adjustXY, points))
+		adjustedPoints = PrinterUtils.reverseBoundX(adjustedPoints, self.max_X) #Reverse X bound
+		package = Gcode.buildGcodePackage(adjustedPoints, (self.max_X, self.max_Y), self.sendSpike)
+		
+		print('-----START PACKAGE------')
+		print(package)
 		self.writePackage(package)
 
 	def packageIsExecuting(self):
 		#Query the printer for position
-		#self.printerSerial.reset_input_buffer()
+		self.printerSerial.reset_output_buffer()
 		self.printerSerial.write('M114'.encode())
 		printerData = ''
 		while self.printerSerial.in_waiting > 0:

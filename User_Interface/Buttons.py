@@ -4,12 +4,16 @@ def checkButtons(printer, sliders):
 	command = cv2.waitKey(10) & 0xFF
 	if command == ord('q'):
 		printer.settings.saveSettings()
+		sliders.maskSettings.saveSettings()
 		printer.home()
 		return True
 	elif command == ord('d'):
 		enableDots = not enableDots
+	elif command == ord('s'):
+		printer.sendMovement = not printer.sendMovement
 	elif command == ord('f'):
-		printer.sendSerial = not printer.sendSpike
+		printer.sendSpike = not printer.sendSpike
+		print(printer.sendSpike)
 	elif command == ord('h'):
 		printer.home()
 	elif command == ord('c'):

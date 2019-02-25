@@ -1,7 +1,1 @@
-{
-    "open": 1,
-    "close": 11,
-    "erode": 10,
-    "dilate": 8,
-    "saturationMin": 170
-}
+{"open": 1, "close": 10, "erode": 10, "dilate": 12, "saturationMin": 124}

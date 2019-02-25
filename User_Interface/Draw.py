@@ -19,7 +19,7 @@ def drawImage(frame, printer):
 	cv2.circle(frame, (int(x), int(y)), 4, (0, 255, 0), 1)
 	cx,cy = printer.position
 	cv2.putText(frame, str((round(cx),round(cy))), (20, 450), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 255))
-	if printer.sendSerial:
+	if printer.sendSpike:
 		cv2.circle(frame, (150, 450), 10, (0, 255, 0), 25)
 	else:
 		cv2.circle(frame, (150, 450), 10, (0, 0, 255), 25)
